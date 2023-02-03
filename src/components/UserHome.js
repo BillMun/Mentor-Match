@@ -7,7 +7,6 @@ export default function UserHome (){
         event.preventDefault()
         await logout()
     }
-    console.log(currentUser.photoURL)
     return(
 
         <div>
