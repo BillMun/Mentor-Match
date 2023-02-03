@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
       .then(async (result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result)
       const token = credential.accessToken
-      window.localStorage.setItem('token',token)
       const user = result.user
       const querySnapshot = await getDocs(query(collection(db,'users'), where('uid','==',user.uid)))
       let doesUserExist = false
@@ -51,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     })}
     const logout = ()=>{
       const auth = getAuth()
-      console.log(auth)
       setCurrentUser(null)
       return signOut(auth)
     }
