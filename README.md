@@ -1,7 +1,7 @@
 Mentor Match
 
 Installation
-If you would like to download and run the source code for this game onto your own machine, you will need to configure your local firebase environment and set up a .env file as appropriate. If you have done this, please follow the list of commands outlined below:
+If you would like to download and run the source code for this repository onto your own machine, you will need to configure your local firebase environment and set up a .env file as appropriate. If you have done this, please follow the list of commands outlined below:
 
 1. Cloning this repository
 git clone git@github.com:BillMun/mentor-match.git
