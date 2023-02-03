@@ -6,17 +6,17 @@ export default function UserHome (){
     const signOut = async (event)=>{
         event.preventDefault()
         await logout()
-        
     }
-    console.log(currentUser)
+    console.log(currentUser.photoURL)
     return(
+
         <div>
-            Hello World
+            Welcome {currentUser.displayName}
             <div>
-            <button type='submit'
-            onClick={(event)=>signOut(event)}>
-                logout
-            </button>
+                <button type='submit'
+                onClick={(event)=>signOut(event)}>
+                    logout
+                </button>
             </div>
         </div>
     )
