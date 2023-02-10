@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut} from 'firebase/auth'
-import {collection, doc, setDoc, getDocs, updateDoc, where, query, Timestamp, addDoc} from 'firebase/firestore'
+import {collection, doc, setDoc, getDocs, getDoc, updateDoc, where, query, Timestamp, addDoc, DocumentReference} from 'firebase/firestore'
 import { auth, db } from '../firebase';
 
 
@@ -13,13 +13,23 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null)
-    const checkCurrentUser =()=>{
+    const [userProfile, getUserProfile] = useState(null)
+    const checkCurrentUser = async ()=>{
       const auth = getAuth()
       onAuthStateChanged(auth, (user)=>{
         if(user){
           setCurrentUser(user)
         }})
     }
+
+    const checkUserProfile = async () =>{
+      const docRef = currentUser.uid ? doc(db, 'users', currentUser.uid) : null
+      const docSnap = currentUser.uid ? await getDoc(docRef) : null
+      if(docSnap.exists()){
+        getUserProfile(docSnap.data())
+      }
+    }
+    
     const signinWithGoogle = async ()=>{
       await signInWithPopup(auth, provider)
       .then(async (result) => {
@@ -32,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         if(doc.data()!==null) doesUserExist = true
       })
       if(!doesUserExist){
-      await setDoc(doc(collection(db,'users')),{
+      await setDoc(doc(db,'users', user.uid),{
             email: user.email,
             name: user.displayName,
             photo: user.photoURL,
@@ -53,12 +63,22 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(null)
       return signOut(auth)
     }
+    const setUserType = async (user, userType) =>{
+      const currentUserDocRef = doc(db, 'users', user.uid)
+      console.log(currentUserDocRef)
+      await updateDoc(currentUserDocRef,{
+        userType: userType
+      })
+    }
 
     const value = {
         signinWithGoogle,
         currentUser,
         checkCurrentUser, 
-        logout
+        logout,
+        setUserType,
+        userProfile,
+        checkUserProfile,
     }
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
